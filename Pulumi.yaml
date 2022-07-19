@@ -1,0 +1,4 @@
+name: infrastructure
+runtime: nodejs
+description: EddieHub Community Infrastructure
+main: src
