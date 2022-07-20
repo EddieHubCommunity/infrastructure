@@ -75,6 +75,8 @@ const nginx = (kubernetesProvider) => {
       },
     }
   );
+
+  return nginxDeployment;
 };
 
 export default nginx;

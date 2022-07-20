@@ -1,7 +1,7 @@
 import * as digitalocean from "@pulumi/digitalocean";
 
 const spaces = (name: string, url: string) => {
-  new digitalocean.SpacesBucket(name, {
+  return new digitalocean.SpacesBucket(name, {
     region: digitalocean.Region.LON1,
     acl: "public-read",
     corsRules: [
