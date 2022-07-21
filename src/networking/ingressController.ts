@@ -1,36 +1,26 @@
+import * as pulumi from "@pulumi/pulumi";
+import * as digitalocean from "@pulumi/digitalocean";
 import * as kubernetes from "@pulumi/kubernetes";
 
-export const deployIngressController = (provider: kubernetes.Provider) => {
-  const emissaryNamespace = new kubernetes.core.v1.Namespace(
-    "emissary",
-    {},
+export const deployIngressController = (
+  provider: kubernetes.Provider,
+  loadBalancer: digitalocean.LoadBalancer
+) => {
+  const ingressDeploy = new kubernetes.helm.v3.Release(
+    "nginx-ignress",
     {
-      provider,
-    }
-  );
-
-  const emissaryCrds = new kubernetes.yaml.ConfigFile(
-    "emissary-crds",
-    {
-      file: "https://app.getambassador.io/yaml/emissary/3.0.0/emissary-crds.yaml",
-    },
-    {
-      provider,
-      dependsOn: emissaryNamespace,
-    }
-  );
-
-  // https://artifacthub.io/packages/helm/datawire/emissary-ingress/
-  const emissaryDeploy = new kubernetes.helm.v3.Release(
-    "emissary",
-    {
-      chart: "emissary-ingress",
+      chart: "ingress-nginx",
       repositoryOpts: {
-        repo: "https://app.getambassador.io",
+        repo: "https://kubernetes.github.io/ingress-nginx",
       },
       values: {
-        service: {
-          type: "LoadBalancer",
+        controller: {
+          service: {
+            type: "LoadBalancer",
+            annotations: {
+              "kubernetes.digitalocean.com/load-balancer-id": loadBalancer.id,
+            },
+          },
         },
       },
     },

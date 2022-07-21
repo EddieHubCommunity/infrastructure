@@ -1,7 +1,9 @@
+import * as pulumi from "@pulumi/pulumi";
+import * as digitalocean from "@pulumi/digitalocean";
 import * as kubernetes from "@pulumi/kubernetes";
 import { deployIngressController } from "./ingressController";
 
-const nginx = (kubernetesProvider) => {
+const nginx = (kubernetesProvider, loadBalancer: digitalocean.LoadBalancer) => {
   const nginxDeployment = new kubernetes.apps.v1.Deployment(
     "nginx",
     {
@@ -9,6 +11,9 @@ const nginx = (kubernetesProvider) => {
         name: "nginx",
         labels: {
           app: "nginx",
+        },
+        annotations: {
+          "pulumi.com/skipAwait": "true",
         },
       },
       spec: {
@@ -42,6 +47,11 @@ const nginx = (kubernetesProvider) => {
   const nginxService = new kubernetes.core.v1.Service(
     "nginx",
     {
+      metadata: {
+        annotations: {
+          "pulumi.com/skipAwait": "true",
+        },
+      },
       spec: {
         selector: {
           app: "nginx",
@@ -58,23 +68,7 @@ const nginx = (kubernetesProvider) => {
     }
   );
 
-  deployIngressController(kubernetesProvider);
-
-  const nginxMapping = new kubernetes.apiextensions.CustomResource(
-    "nginxMapping",
-    {
-      apiVersion: "getambassador.io/v3alpha1",
-      kind: "Mapping",
-      metadata: {
-        name: "nginx",
-      },
-      spec: {
-        hostname: "*",
-        prefix: "/",
-        service: nginxService.metadata.name,
-      },
-    }
-  );
+  deployIngressController(kubernetesProvider, loadBalancer);
 
   return nginxDeployment;
 };
