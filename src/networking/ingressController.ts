@@ -14,11 +14,19 @@ export const deployIngressController = (
         repo: "https://kubernetes.github.io/ingress-nginx",
       },
       values: {
+        // controller.service.httpsPort.targetPort
+        // controller.service.targetPorts.https
         controller: {
           service: {
+            targetPorts: {
+              https: "http",
+            },
             type: "LoadBalancer",
             annotations: {
               "kubernetes.digitalocean.com/load-balancer-id": loadBalancer.id,
+              "service.beta.kubernetes.io/do-loadbalancer-protocol": "http",
+              "service.beta.kubernetes.io/do-loadbalancer-redirect-http-to-https":
+                "true",
             },
           },
         },
