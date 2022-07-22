@@ -13,6 +13,7 @@ import { deployMongoDBCluster } from "./databases/mongo";
 import ingress from "./networking/ingress";
 import linkfreeApp from "./apps/linkfree";
 import finderApp from "./apps/finder";
+import secrets from "./kubernetes/secrets";
 
 const name = "eddiehub2";
 const url = "eddiehubcommunity.org";
@@ -25,10 +26,11 @@ const nginxResource = nginx(kubernetesProvider, loadBalancerResource);
 // const spacesResource = spaces(name, url);
 
 deployMongoDBCluster("mongo", kubernetesProvider);
+secrets(kubernetesProvider);
 
 ingress(kubernetesProvider);
 linkfreeApp(kubernetesProvider);
-// finderApp(kubernetesProvider);
+finderApp(kubernetesProvider);
 
 project(name, [
   loadBalancerResource.loadBalancerUrn,

@@ -1,1 +1,3 @@
-encryptionsalt: v1:gRkGa0OXEOw=:v1:xJyT5Xew03l02Wll:rjwNkxisaCIPEng4qx/i/xPGNlDe4A==
+config:
+  infrastructure:GH_TOKEN:
+    secure: AAABAKOgsoBa2/65UHNujZlJ9VWGMnL7Eo5hmVJdMTDdk6E1K0m+NY/Hr7U3wFNiuCl3HnN3BV6Ksx/UCHaPqqdWzvneJNeR
