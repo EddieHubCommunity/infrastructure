@@ -7,6 +7,9 @@ const secrets = (kubernetesProvider) => {
   const GH_TOKEN = new k8s.core.v1.Secret(
     "gh-token",
     {
+      metadata: {
+        name: "gh-token",
+      },
       stringData: {
         GH_TOKEN: config.requireSecret("GH_TOKEN"),
       },
