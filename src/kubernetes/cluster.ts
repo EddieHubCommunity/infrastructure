@@ -2,7 +2,6 @@ import * as pulumi from "@pulumi/pulumi";
 import * as digitalocean from "@pulumi/digitalocean";
 import * as kubernetes from "@pulumi/kubernetes";
 
-const projectName = pulumi.getProject();
 const clusterName = pulumi.getStack();
 
 export const kubernetesCluster = new digitalocean.KubernetesCluster(
