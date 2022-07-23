@@ -12,7 +12,7 @@ const finderApp = (kubernetesProvider, secretsResource) => {
     },
     {
       provider: kubernetesProvider,
-      dependsOn: [secretsResource.GH_TOKEN],
+      dependsOn: [kubernetesProvider, secretsResource.GH_TOKEN],
     }
   );
   return finder;

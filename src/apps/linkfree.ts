@@ -12,6 +12,7 @@ const linkfreeApp = (kubernetesProvider) => {
     },
     {
       provider: kubernetesProvider,
+      dependsOn: [kubernetesProvider],
     }
   );
   return linkfree;
