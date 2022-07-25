@@ -23,6 +23,7 @@ export const deployMongoDBCluster = (
           size: "5Gi",
         },
         auth: {
+          existingSecret: "mongodb-passwords",
           usernames: [config.requireSecret("API_MONGO_USERNAME")],
           passwords: [config.requireSecret("API_MONGO_PASSWORD")],
           databases: ["api"],

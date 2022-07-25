@@ -30,8 +30,6 @@ export const kubeconfig = kubernetesCluster.status.apply((status) => {
   }
 });
 
-const kubernetesProvider = new kubernetes.Provider("digitalocean", {
+export const kubernetesProvider = new kubernetes.Provider("digitalocean", {
   kubeconfig,
 });
-
-export { kubernetesProvider };
