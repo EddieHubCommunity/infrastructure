@@ -1,11 +1,3 @@
 config:
-  infrastructure:API_MONGO_PASSWORD:
-    secure: AAABAGtoaR2B6efFqrLseuUJtLISCBSXASbbCXv7KhszNgtxl8+EUyqGy6yajzgqeA==
-  infrastructure:API_MONGO_USERNAME:
-    secure: AAABAPS0j5pAzqG1wsAq/qqvN1XY0x1B0gnuqjkovgmpDxzZvax1s1xYoJY=
-  infrastructure:API_WEBHOOK_SECRET:
-    secure: AAABAN8TXE4z6fBJgKHt4NEcUHdIxZzvMFmlk3A3zMsgGx008wf/ANo0allEwYQkNaSVVzi7Lo9ygA==
-  infrastructure:APPROVED_TOKENS:
-    secure: AAABAKVI+5wuYTDYhkUVEIze+cR8I7nFBvh4jl9Mp6opZ5qppsQD7XFoec+7v8fqr2rZOPCIDOulOpRAwTvL4+CGcPQ=
   infrastructure:GH_TOKEN:
-    secure: AAABAJ0sbhLzBY5pZXVIIKgE+id2orB4KCfJGf57UXbTltVIgl1UvIr0J2PFuLsICV7DMGwyluhpGv18X1rbGuiWhqBjWERM
+    secure: AAABAPxjpYQ+JZuVkjfvX57EmBM2ce0ttJxwvoFOAOPkQIeJ7TiqzQfS4eOKthnEtrwEktfwTsFnwoAcet7rvaeqzGQfn3Qm

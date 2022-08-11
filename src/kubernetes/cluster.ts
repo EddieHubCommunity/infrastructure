@@ -4,20 +4,24 @@ import * as kubernetes from "@pulumi/kubernetes";
 
 const clusterName = pulumi.getStack();
 
-export const kubernetesCluster = new digitalocean.KubernetesCluster(
-  clusterName,
-  {
-    region: digitalocean.Region.LON1,
-    nodePool: {
-      name: "pool-one",
-      size: digitalocean.DropletSlug.DropletS2VCPU2GB,
-      nodeCount: 1,
-      minNodes: 1,
-      maxNodes: 2,
+export const createCluster = () =>
+  new digitalocean.KubernetesCluster(
+    clusterName,
+    {
+      region: digitalocean.Region.LON1,
+      nodePool: {
+        name: "pool-one",
+        size: digitalocean.DropletSlug.DropletS2VCPU2GB,
+        nodeCount: 1,
+        minNodes: 1,
+        maxNodes: 2,
+      },
+      version: "1.23.9-do.0",
     },
-    version: digitalocean.getKubernetesVersions().then((p) => p.latestVersion),
-  }
-);
+    {
+      ignoreChanges: ["version"],
+    }
+  );
 
 export const kubeconfig = kubernetesCluster.status.apply((status) => {
   if (status === "running") {
