@@ -1,3 +1,7 @@
-# Community Template Repo
+# Infrastructure for EddieHub
 
-Template repo with docs and GitHub Actions etc, to create other projects.
+> **Note**
+> 
+> Work in progress
+
+Latest changes in `app` branch

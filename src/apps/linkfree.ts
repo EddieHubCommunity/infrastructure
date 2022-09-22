@@ -1,7 +1,7 @@
 import * as k8s from "@pulumi/kubernetes";
 
-const linkfreeApp = (kubernetesProvider) => {
-  const linkfree = new k8s.yaml.ConfigGroup(
+export const deployLinkFree = (kubernetesProvider) => {
+  return new k8s.yaml.ConfigGroup(
     "LinkFree",
     {
       files: [
@@ -15,7 +15,4 @@ const linkfreeApp = (kubernetesProvider) => {
       dependsOn: [kubernetesProvider],
     }
   );
-  return linkfree;
 };
-
-export default linkfreeApp;
