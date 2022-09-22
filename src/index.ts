@@ -1,56 +1,50 @@
+import { firewall, firewallName } from "./kubernetes/firewall";
+
+import * as civo from "@pulumi/civo";
 import * as kubernetes from "@pulumi/kubernetes";
-import * as fs from "fs";
-import domain from "./networking/domain";
-// import {
-// kubernetesProvider,
-// createCluster,
-// kubeconfig,
-// } from "./kubernetes/cluster";
-import spaces from "./storage/spaces";
+// import domain from "./networking/domain";
+import {
+  createCluster,
+  // createCluster,
+  // kubeconfig,
+} from "./kubernetes/cluster";
+// import spaces from "./storage/spaces";
 import nginx from "./networking/nginx";
-import project from "./project";
-import cert from "./networking/cert";
+// import cert from "./networking/cert";
 import { deployMongoDBCluster } from "./databases/mongo";
 
-import ingress from "./networking/ingress";
+// import ingress from "./networking/ingress";
+// import secrets from "./kubernetes/secrets";
 import linkfreeApp from "./apps/linkfree";
-import secrets from "./kubernetes/secrets";
-import finderApp from "./apps/finder";
-import apiApp from "./apps/api/deployment";
+// import finderApp from "./apps/finder";
+// import apiApp from "./apps/api/deployment";
 
 const name = "eddiehub2";
 const url = "eddiehubcommunity.org";
 
-// DO NOT DO THIS IN PRODUCTION
-const kubernetesProvider = new kubernetes.Provider("digitalocean", {
-  kubeconfig: fs
-    .readFileSync("../production-189803e-kubeconfig.yaml")
-    .toString(),
+const firewallResource = firewall(name);
+const clusterResource = createCluster(firewallResource.id);
+
+export const kubeconfig = clusterResource.kubeconfig;
+
+const kubernetesProvider = new kubernetes.Provider("civo", {
+  kubeconfig: clusterResource.kubeconfig,
 });
 
-const domainResource = domain(name, url);
-const secretsResource = secrets(kubernetesProvider);
+// const domainResource = domain(name, url);
+// const secretsResource = secrets(kubernetesProvider);
 
-const loadBalancerResource = cert(domainResource);
+// const loadBalancerResource = cert(domainResource);
 
-const nginxResource = nginx(kubernetesProvider, loadBalancerResource);
+const nginxResource = nginx(kubernetesProvider);
 // const spacesResource = spaces(name, url);
 
 const mongoDb = deployMongoDBCluster("mongo", kubernetesProvider);
 
-ingress(kubernetesProvider);
+// ingress(kubernetesProvider);
+// finderApp(kubernetesProvider, secretsResource);
+// apiApp(kubernetesProvider, []);
 linkfreeApp(kubernetesProvider);
-finderApp(kubernetesProvider, secretsResource);
-apiApp(kubernetesProvider, []);
-
-// mongodb;
-// mongodb - credentials;
-
-project(name, [
-  loadBalancerResource.loadBalancerUrn,
-  domainResource.domainUrn,
-  // spacesResource,
-]);
 
 import { deployGrafana } from "./monitoring/grafana";
 const grafana = deployGrafana("production", kubernetesProvider);

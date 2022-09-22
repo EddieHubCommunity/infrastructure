@@ -13,7 +13,7 @@ export const deployPromTail = (
       },
       values: {
         loki: {
-          serviceName: "loki-production-6902ff4b", // TODO: get this dynamically
+          serviceName: "loki-gateway",
         },
       },
     },

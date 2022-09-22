@@ -1,39 +1,24 @@
 import * as pulumi from "@pulumi/pulumi";
-import * as digitalocean from "@pulumi/digitalocean";
-import * as kubernetes from "@pulumi/kubernetes";
+import * as civo from "@pulumi/civo";
 
 const clusterName = pulumi.getStack();
 
-export const createCluster = () =>
-  new digitalocean.KubernetesCluster(
+export const createCluster = (firewall: pulumi.Output<string>) => {
+  return new civo.KubernetesCluster(
     clusterName,
     {
-      region: digitalocean.Region.LON1,
-      nodePool: {
-        name: "pool-one",
-        size: digitalocean.DropletSlug.DropletS2VCPU2GB,
-        nodeCount: 1,
-        minNodes: 1,
-        maxNodes: 2,
+      region: "lon1",
+      pools: {
+        size: "g4s.kube.medium",
+        nodeCount: 3,
       },
-      version: "1.23.9-do.0",
+      firewallId: firewall,
     },
     {
-      ignoreChanges: ["version"],
+      ignoreChanges: ["version", "pools.nodeCount"],
     }
   );
+};
 
-export const kubeconfig = kubernetesCluster.status.apply((status) => {
-  if (status === "running") {
-    const clusterDataSource = kubernetesCluster.name.apply((name) =>
-      digitalocean.getKubernetesCluster({ name })
-    );
-    return clusterDataSource.kubeConfigs[0].rawConfig;
-  } else {
-    return kubernetesCluster.kubeConfigs[0].rawConfig;
-  }
-});
-
-export const kubernetesProvider = new kubernetes.Provider("digitalocean", {
-  kubeconfig,
-});
+// export const clusterNameCivo = createCluster.name
+// export const kcCivo = createCluster.kubeconfig

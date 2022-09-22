@@ -16,11 +16,18 @@ export const deployLoki = (
         // insetad we'd rather understand how to configure promtail
         // the docs are incorrect!
         fullnameOverride: "loki-gateway",
+        auth_enabled: false,
         service: {
           port: "80",
         },
         persistence: {
           enabled: true,
+        },
+        read: {
+          affinity: "",
+        },
+        write: {
+          affinity: "",
         },
       },
     },

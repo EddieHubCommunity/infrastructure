@@ -6,7 +6,7 @@ import * as random from "@pulumi/random";
 
 interface MongoDB {
   secretName: pulumi.Output<string>;
-  serviceName: string | pulumi.Outpk=ut<string>;
+  serviceName: string | pulumi.Output<string>;
 }
 
 export const deployMongoDBCluster = (

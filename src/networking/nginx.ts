@@ -3,7 +3,7 @@ import * as digitalocean from "@pulumi/digitalocean";
 import * as kubernetes from "@pulumi/kubernetes";
 import { deployIngressController } from "./ingressController";
 
-const nginx = (kubernetesProvider, loadBalancer: digitalocean.LoadBalancer) => {
+const nginx = (kubernetesProvider) => {
   const nginxDeployment = new kubernetes.apps.v1.Deployment(
     "nginx",
     {
@@ -68,7 +68,7 @@ const nginx = (kubernetesProvider, loadBalancer: digitalocean.LoadBalancer) => {
     }
   );
 
-  deployIngressController(kubernetesProvider, loadBalancer);
+  deployIngressController(kubernetesProvider);
 
   return nginxDeployment;
 };

@@ -6,6 +6,7 @@ export const deployGrafana = (
 ) => {
   // helm repo add grafana https://grafana.github.io/helm-charts
   return new kubernetes.helm.v3.Release(
+    // `grafana-${name}`,
     name,
     {
       chart: "grafana",
