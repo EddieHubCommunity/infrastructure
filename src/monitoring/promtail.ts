@@ -13,7 +13,7 @@ export const deployPromTail = (
       },
       values: {
         loki: {
-          serviceName: "loki-gateway",
+          serviceName: "loki-ingester",
         },
       },
     },

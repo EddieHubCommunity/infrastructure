@@ -1,24 +1,32 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as civo from "@pulumi/civo";
 
-const clusterName = pulumi.getStack();
+interface Config {
+  name: string;
+  region: string;
+  mainPool: {
+    size: string;
+    nodeCount: number;
+  };
+}
 
-export const createCluster = (firewall: pulumi.Output<string>) => {
-  return new civo.KubernetesCluster(
-    clusterName,
-    {
-      region: "lon1",
-      pools: {
-        size: "g4s.kube.medium",
-        nodeCount: 3,
-      },
-      firewallId: firewall,
-    },
-    {
-      ignoreChanges: ["version", "pools.nodeCount"],
-    }
-  );
+interface Response {
+  kubeconfig: pulumi.Output<string>;
+}
+
+export const createCluster = (config: Config): Response => {
+  const firewall = new civo.Firewall(config.name, {
+    region: config.region,
+    createDefaultRules: true,
+  });
+
+  const cluster = new civo.KubernetesCluster(config.name, {
+    region: config.region,
+    pools: config.mainPool,
+    firewallId: firewall.id,
+  });
+
+  return {
+    kubeconfig: cluster.kubeconfig,
+  };
 };
-
-// export const clusterNameCivo = createCluster.name
-// export const kcCivo = createCluster.kubeconfig

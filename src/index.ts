@@ -1,61 +1,51 @@
-import { firewall, firewallName } from "./kubernetes/firewall";
-
-import * as civo from "@pulumi/civo";
-import * as kubernetes from "@pulumi/kubernetes";
-// import domain from "./networking/domain";
-import {
-  createCluster,
-  // createCluster,
-  // kubeconfig,
-} from "./kubernetes/cluster";
-// import spaces from "./storage/spaces";
-import nginx from "./networking/nginx";
-// import cert from "./networking/cert";
-import { deployMongoDBCluster } from "./databases/mongo";
-
-// import ingress from "./networking/ingress";
-// import secrets from "./kubernetes/secrets";
-import linkfreeApp from "./apps/linkfree";
+// WIP
+// // import domain from "./networking/domain";
+// // import spaces from "./storage/spaces";
+// // import cert from "./networking/cert";
+// // import ingress from "./networking/ingress";
+// // import secrets from "./kubernetes/secrets";
+// Needs GH TOKEN
 // import finderApp from "./apps/finder";
-// import apiApp from "./apps/api/deployment";
 
-const name = "eddiehub2";
-const url = "eddiehubcommunity.org";
+// Working
+import * as pulumi from "@pulumi/pulumi";
+const stackName = pulumi.getStack();
 
-const firewallResource = firewall(name);
-const clusterResource = createCluster(firewallResource.id);
-
-export const kubeconfig = clusterResource.kubeconfig;
-
-const kubernetesProvider = new kubernetes.Provider("civo", {
-  kubeconfig: clusterResource.kubeconfig,
+import { createCluster } from "./kubernetes/cluster";
+export const { kubeconfig } = createCluster({
+  name: stackName,
+  region: "lon1",
+  mainPool: {
+    size: "g4s.kube.medium",
+    nodeCount: 4,
+  },
 });
 
-// const domainResource = domain(name, url);
-// const secretsResource = secrets(kubernetesProvider);
+import * as kubernetes from "@pulumi/kubernetes";
+const kubernetesProvider = new kubernetes.Provider("kubernetes", {
+  kubeconfig,
+});
 
-// const loadBalancerResource = cert(domainResource);
-
-const nginxResource = nginx(kubernetesProvider);
-// const spacesResource = spaces(name, url);
-
-const mongoDb = deployMongoDBCluster("mongo", kubernetesProvider);
-
-// ingress(kubernetesProvider);
-// finderApp(kubernetesProvider, secretsResource);
-// apiApp(kubernetesProvider, []);
-linkfreeApp(kubernetesProvider);
+import { deployIngressController } from "./networking/ingressController";
+deployIngressController(kubernetesProvider);
 
 import { deployGrafana } from "./monitoring/grafana";
-const grafana = deployGrafana("production", kubernetesProvider);
+const grafana = deployGrafana(stackName, kubernetesProvider);
 
 import { deployLoki } from "./monitoring/loki";
-const loki = deployLoki("production", kubernetesProvider);
+const loki = deployLoki(stackName, kubernetesProvider);
 
 import { deployPromTail } from "./monitoring/promtail";
-const promtail = deployPromTail("production", kubernetesProvider);
+const promtail = deployPromTail(stackName, kubernetesProvider);
 
 import { deployTeleport } from "./teleport";
-const teleport = deployTeleport("production", kubernetesProvider);
+const teleport = deployTeleport(stackName, kubernetesProvider);
 
-// export { kubeconfig };
+import { deployMongoDBCluster } from "./databases/mongo";
+const mongoDb = deployMongoDBCluster(stackName, kubernetesProvider);
+
+import { deployLinkFree } from "./apps/linkfree";
+const linkFree = deployLinkFree(kubernetesProvider);
+
+import { deployApi } from "./apps/api/deployment";
+deployApi(kubernetesProvider);

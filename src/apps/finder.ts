@@ -1,6 +1,6 @@
 import * as k8s from "@pulumi/kubernetes";
 
-const finderApp = (kubernetesProvider, secretsResource) => {
+export const finderApp = (kubernetesProvider, secretsResource) => {
   const finder = new k8s.yaml.ConfigGroup(
     "Finder",
     {
@@ -17,5 +17,3 @@ const finderApp = (kubernetesProvider, secretsResource) => {
   );
   return finder;
 };
-
-export default finderApp;

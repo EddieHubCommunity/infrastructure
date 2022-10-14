@@ -2,7 +2,10 @@ import * as k8s from "@pulumi/kubernetes";
 import { CustomResource } from "@pulumi/pulumi";
 import secrets from "./secrets";
 
-const apiApp = (kubernetesProvider, dependsOn: CustomResource[] = []) => {
+export const deployApi = (
+  kubernetesProvider,
+  dependsOn: CustomResource[] = []
+) => {
   const api = new k8s.yaml.ConfigGroup(
     "api",
     {
@@ -36,5 +39,3 @@ const apiApp = (kubernetesProvider, dependsOn: CustomResource[] = []) => {
   );
   return api;
 };
-
-export default apiApp;
